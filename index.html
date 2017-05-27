@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<link rel="stylesheet" type="text/css" href="Areas.css"/>
+<title></title>
+</head>
+<body>
+<div class="select-city">
+	<div class="select-city-shade"></div>
+	<div class="select-city-container">
+		<div class="select-city-title">
+			<div class="selected-prov">选择省</div>
+			<div class="select-close" id="btnSure" >完成</div>
+		</div>
+		<div class="select-item-container">
+			<!--<div class="prov-item-container">
+				<div class="select-item" data-prov="0">北京<span>〉</span></div>
+			</div>-->
+		</div>
+	</div>
+</div>
+<script src="jquery.js"></script>
+<!--<script src="Areas.js"></script>
+<script src="Areas-select.js"></script>-->
+<script>
+	//1、加载省级部门http://127.0.0.1:8020/gongan/app/department/queryFirstDept.do
+			   getData('http://192.168.1.110:9090/gongan/app/department/queryFirstDept.do') 
+			function selected(obj){
+			   		var id=$(obj).attr("id");
+			   		var content=$(obj).find("item2").text();
+			    	$(".selected-prov").text(content).attr("id",id);
+			    	$("#sheng").remove();
+			    	//设置市级下面的数据
+					$.ajax({
+					        type: 'get',
+						    url:"http://192.168.1.110:9090/gongan/app/department/queryDeptUserById.do?id="+id,
+						    dataType: 'json',
+						    success: function (data) {
+						    	if(data.status=="1"){
+						    		var str="";
+						    		var departmentList=data.deptList;
+						    		str+='<div id="sheng" class="prov-item-container">';
+						    		for(var i=0;i<departmentList.length;i++){
+						    			var item=departmentList[i];
+						    			str+='<div onclick="selected1(this)" class="select-item" id="'+item.id+'"><div class="item2">〉</div><div class="item1">'+item.name+'</div></div>';
+						    		}
+						    		 str+='</div>';
+		        					$(".select-item-container").html(str);
+						    	}
+						    },
+						    error: function (data) {
+						        diaLog("error");
+						    }
+					    }); 
+			   }
+			
+			function selected1(obj){
+				//设置市级下面的数据
+				var id=$(obj).attr("id");
+		   		var content=$(obj).find("item2").text();
+		    	$(".selected-prov").text(content).attr("id",id);
+		    	$("#sheng").remove();
+				$.ajax({
+				        type: 'get',
+					    url:"http://192.168.1.110:9090/gongan/app/department/queryDeptUserById.do?id="+id,
+					    dataType: 'json',
+					    success: function (data) {
+					    	if(data.status=="1"){
+					    		var str="";
+					    		var departmentList=data.deptList;
+					    		console.log(departmentList)
+					    		str+='<div id="sheng" class="prov-item-container">';
+					    		for(var i=0;i<departmentList.length;i++){
+					    			var item=departmentList[i];
+					    			str+='<div onclick="selected1(this)" class="select-item" id="'+item.id+'"><div class="item2">〉</div><div class="item1">'+item.name+'</div></div>';
+					    		}
+					    		str+='</div>';
+		        				$(".select-item-container").html(str);
+					    	}
+					    },
+					    error: function (data) {
+					        diaLog("error");
+					    }
+				    }); 
+			}
+	//公共调用ajax
+	function getData(url,id){
+		$.ajax({
+	        type: 'get',
+	        url: url,
+	        dataType: 'json',
+	        data:{"id":id},
+	        success: function (data) {
+	        	if(data.status=="1"){
+	        		var str="";
+	        		var list=data.resultMap;
+	        		str+='<div id="sheng" class="prov-item-container">';
+	        		for(var i=0;i<list.length;i++){
+	        			var item=list[i];
+						str+='<div onclick="selected(this)" class="select-item" id="'+item.id+'"><div class="item2">〉</div><div class="item1">'+item.name+'</div></div>';
+	        		}
+        			 str+='</div>';
+        			$(".select-item-container").html(str);
+	        	}
+	        },
+	        error: function (data) {
+	            alert("error");
+	        }
+	    });
+	}
+	$("#btnSure").
+</script>
+</body>
